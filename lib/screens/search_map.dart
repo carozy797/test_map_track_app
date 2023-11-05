@@ -42,18 +42,24 @@ class _SearchMapState extends State<SearchMap> {
     setState(() {});
   }
 
+  TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
+          const SizedBox(
+            height: 20,
+          ),
           Row(
             children: [
               Expanded(
-                child: TextFormField(),
+                child: TextFormField(
+                  controller: _searchController,
+                ),
               ),
               IconButton(
-                icon: const Icon(Icons.search),
+                icon: const Icon(Icons.search,),
                 onPressed: () {},
               ),
             ],
