@@ -11,9 +11,8 @@ class SearchMap extends StatefulWidget {
 }
 
 class _SearchMapState extends State<SearchMap> {
-  
   final Completer<GoogleMapController> _controller = Completer();
-  
+
   static const CameraPosition _pGooglePlex = CameraPosition(
     target: _source, // Accra, Ghana coordinates
     zoom: 14,
@@ -24,28 +23,53 @@ class _SearchMapState extends State<SearchMap> {
   final Set<Marker> _markers = {};
 
   final List<Marker> mymarker = [];
+  final List<Marker> myMarkerList = const [
+    Marker(
+      markerId: MarkerId("source"),
+      position: _destination, // LatLng for the marker
+      icon: BitmapDescriptor.defaultMarker,
+      infoWindow: InfoWindow(
+        title: 'Marker Source',
+        snippet: 'Marker 1',
+      ),
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
-    // mymarker.addAll(myMarkerList
-
+    mymarker.addAll(myMarkerList);
     setState(() {});
-  
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        // polylines: _polyline,
-        initialCameraPosition: _pGooglePlex,
-        markers: _markers,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        // Use the Set of markers here
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(),
+              ),
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+            ],
+          ),
+          Expanded(
+            child: GoogleMap(
+              // polylines: _polyline,
+              initialCameraPosition: _pGooglePlex,
+              markers: Set<Marker>.of(mymarker),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              // Use the Set of markers here
+            ),
+          ),
+        ],
       ),
     );
   }
