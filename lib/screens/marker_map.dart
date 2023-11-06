@@ -22,11 +22,11 @@ class _MyMarkerState extends State<MyMarker> {
   final Set<Polyline> _polyline = {};
   LatLng? userLocation;
 
-  static  CameraPosition _pGooglePlex = const CameraPosition(
+  static CameraPosition _pGooglePlex = const CameraPosition(
     target: _source, // Accra, Ghana coordinates
     zoom: 14,
   );
-   
+
   static const LatLng _source = LatLng(5.560014, -0.205744);
   // static const LatLng _source = LatLng(lat!, long!);
 
@@ -48,9 +48,7 @@ class _MyMarkerState extends State<MyMarker> {
         snippet: 'custom',
       ),
     ));
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   static const LatLng _destination = LatLng(5.551614, -0.195244); // Adjusted latitude and longitude
@@ -65,15 +63,15 @@ class _MyMarkerState extends State<MyMarker> {
         snippet: 'Marker 2',
       ),
     ),
-    // Marker(
-    //   markerId: MarkerId("marker_1"),
-    //   position: _destination, // LatLng for the marker
-    //   icon: BitmapDescriptor.defaultMarker,
-    //   infoWindow: InfoWindow(
-    //     title: 'Marker Title',
-    //     snippet: 'Marker 1',
-    //   ),
-    // ),
+    Marker(
+      markerId: MarkerId("marker_1"),
+      position: _destination, // LatLng for the marker
+      icon: BitmapDescriptor.defaultMarker,
+      infoWindow: InfoWindow(
+        title: 'Marker Title',
+        snippet: 'Marker 1',
+      ),
+    ),
   ];
   Location location = Location();
 
@@ -98,7 +96,6 @@ class _MyMarkerState extends State<MyMarker> {
       }
     }
 
-    _locationData = await location.getLocation();
     return _locationData;
   }
 
@@ -107,6 +104,9 @@ class _MyMarkerState extends State<MyMarker> {
       print("My location");
       print('$value.latitude, $value.longitude');
       userLocation = LatLng(value.latitude, value.longitude);
+      // location.onLocationChanged.listen((event) {
+      //   _locationData = event;
+      // });
 
       // make inital camera position the taken location
       _pGooglePlex = CameraPosition(
@@ -149,6 +149,9 @@ class _MyMarkerState extends State<MyMarker> {
     super.initState();
     mymarker.addAll(myMarkerList);
     packData();
+    setState(() {
+      
+    });
     getCustomeMarker();
 
     setState(() {});

@@ -19,9 +19,6 @@ class _SearchMapState extends State<SearchMap> {
   );
   static const LatLng _source = LatLng(5.560014, -0.205744);
   static const LatLng _destination = LatLng(5.551614, -0.205244); // Adjusted latitude and longitude
-
-  final Set<Marker> _markers = {};
-
   final List<Marker> mymarker = [];
   final List<Marker> myMarkerList = const [
     Marker(
@@ -55,11 +52,21 @@ class _SearchMapState extends State<SearchMap> {
             children: [
               Expanded(
                 child: TextFormField(
+                  keyboardType: TextInputType.text,
                   controller: _searchController,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: const InputDecoration(
+                    hintText: "search by city",
+                  ),
+                  onChanged: (value) {
+                    print(value);
+                  },
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.search,),
+                icon: const Icon(
+                  Icons.search,
+                ),
                 onPressed: () {},
               ),
             ],
