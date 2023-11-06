@@ -19,33 +19,13 @@ class MyTrack extends StatefulWidget {
 
 class _MyTrackState extends State<MyTrack> {
   final Completer<GoogleMapController> _controller = Completer();
-  static const LatLng destination = LatLng(37.33429383, -122.06600055);
 
   LatLng? source_address;
 
   List<LatLng> polylineCoordinates = [];
 
   final List<Marker> mymarker = [];
-  final List<Marker> myMarkerList = const [
-    // Marker(
-    //   markerId: MarkerId("marker_2"),
-    //   position: source_address, // LatLng for the marker
-    //   icon: BitmapDescriptor.defaultMarker,
-    //   infoWindow: InfoWindow(
-    //     title: 'Marker Title',
-    //     snippet: 'Marker 2',
-    //   ),
-    // ),
-    // Marker(
-    //   markerId: MarkerId("marker_1"),
-    //   position: destination, // LatLng for the marker
-    //   icon: BitmapDescriptor.defaultMarker,
-    //   infoWindow: InfoWindow(
-    //     title: 'Marker Title',
-    //     snippet: 'Marker 1',
-    //   ),
-    // ),
-  ];
+  final List<Marker> myMarkerList = const [];
   Location location = Location();
   final Set<Polyline> _polyline = {};
 
@@ -61,10 +41,10 @@ class _MyTrackState extends State<MyTrack> {
     source_address = widget.p_loc_lat_long;
     mymarker.add(
       Marker(
-        markerId: MarkerId("marker_2"),
+        markerId: const MarkerId("marker_2"),
         position: source_address!, // LatLng for the marker
         icon: BitmapDescriptor.defaultMarker,
-        infoWindow: InfoWindow(
+        infoWindow: const InfoWindow(
           title: 'Marker Title',
           snippet: 'Marker 2',
         ),
@@ -115,11 +95,7 @@ class _MyTrackState extends State<MyTrack> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-          // currentLocation == null
-          // ? const Center(child: Text("Loading"))
-          // :
-          GoogleMap(
+      body: GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
           target: widget.p_loc_lat_long,
