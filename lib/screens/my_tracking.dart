@@ -103,7 +103,7 @@ class _MyTrackState extends State<MyTrack> {
       _polyline.add(
         Polyline(
           polylineId: const PolylineId("route"),
-          points: [source_address!, destination],
+          points: [source_address!, LatLng(newLoc.latitude!, newLoc.longitude!)],
           color: Colors.purple,
           width: 8,
         ),
@@ -129,7 +129,7 @@ class _MyTrackState extends State<MyTrack> {
         onMapCreated: (mapController) {
           _controller.complete(mapController);
         },
-        // polylines: _polyline,
+        polylines: _polyline,
       ),
     );
   }
