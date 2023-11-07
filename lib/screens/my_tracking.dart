@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -131,8 +130,6 @@ class _MyTrackState extends State<MyTrack> {
   }
 }
 
-
-
 // import 'dart:async';
 
 // import 'package:flutter/material.dart';
@@ -196,18 +193,18 @@ class _MyTrackState extends State<MyTrack> {
 //       print("now");
 //       print(currentLocation);
 //       print(DateTime.now());
-// mymarker.add(Marker(
-//   markerId: const MarkerId("current position"),
-//   position: LatLng(
-//     newLoc.latitude!,
-//     newLoc.longitude!,
-//   ), // LatLng for the marker
-//   icon: BitmapDescriptor.defaultMarker,
-//   infoWindow: const InfoWindow(
-//     title: 'Marker position',
-//     snippet: 'location',
-//   ),
-// ));
+//       mymarker.add(Marker(
+//         markerId: const MarkerId("current position"),
+//         position: LatLng(
+//           newLoc.latitude!,
+//           newLoc.longitude!,
+//         ), // LatLng for the marker
+//         icon: BitmapDescriptor.defaultMarker,
+//         infoWindow: const InfoWindow(
+//           title: 'Marker position',
+//           snippet: 'location',
+//         ),
+//       ));
 //       googleMapController.animateCamera(
 //         CameraUpdate.newCameraPosition(
 //           CameraPosition(
@@ -222,7 +219,6 @@ class _MyTrackState extends State<MyTrack> {
 //       setState(() {});
 //       _polyline.add(
 //         Polyline(
-
 //           polylineId: const PolylineId("route"),
 //           points: [source_address!, LatLng(newLoc.latitude!, newLoc.longitude!)],
 //           color: Colors.purple,
