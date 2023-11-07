@@ -1,3 +1,138 @@
+
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+
+class MyTrack extends StatefulWidget {
+  final Location pLocation;
+  final LatLng pLocLatLng;
+
+  MyTrack({
+    Key? key,
+    required this.pLocLatLng,
+    required this.pLocation,
+  });
+
+  @override
+  State<MyTrack> createState() => _MyTrackState();
+}
+
+class _MyTrackState extends State<MyTrack> {
+  final Completer<GoogleMapController> _controller = Completer();
+  LatLng? sourceAddress;
+
+  List<LatLng> polylineCoordinates = [];
+  final List<Marker> mymarker = [];
+  final List<Marker> myMarkerList = const [];
+  Location location = Location();
+  final Set<Polyline> _polyline = {};
+
+  LocationData? currentLocation;
+  List<LatLng> allLocations = []; // List to store all location points
+
+  @override
+  void initState() {
+    super.initState();
+    mymarker.addAll(myMarkerList);
+    getCurrentLocation(context);
+  }
+
+  Future<void> getCurrentLocation(BuildContext context) async {
+    sourceAddress = widget.pLocLatLng;
+    print("Source ===============================================");
+    print(sourceAddress);
+    print(DateTime.now());
+    mymarker.add(
+      Marker(
+        markerId: const MarkerId("marker_2"),
+        position: sourceAddress!,
+        icon: BitmapDescriptor.defaultMarker,
+        infoWindow: const InfoWindow(
+          title: 'Marker Title',
+          snippet: 'Source',
+        ),
+      ),
+    );
+
+    final GoogleMapController googleMapController = await _controller.future;
+
+    widget.pLocation.onLocationChanged.listen((newLoc) {
+      currentLocation = newLoc;
+      print("Current ===============================================");
+      print(currentLocation);
+      print(DateTime.now());
+
+      // Add the new location to the list
+      allLocations.add(LatLng(newLoc.latitude!, newLoc.longitude!));
+
+      // Add a new segment to the polyline
+      if (allLocations.length > 1) {
+        polylineCoordinates.add(allLocations[allLocations.length - 2]);
+        polylineCoordinates.add(allLocations.last);
+      }
+      mymarker.add(Marker(
+        markerId: const MarkerId("current position"),
+        position: LatLng(
+          newLoc.latitude!,
+          newLoc.longitude!,
+        ), // LatLng for the marker
+        icon: BitmapDescriptor.defaultMarker,
+        infoWindow: const InfoWindow(
+          title: 'Marker position',
+          snippet: 'location',
+        ),
+      ));
+
+      googleMapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            zoom: 12,
+            target: LatLng(
+              newLoc.latitude!,
+              newLoc.longitude!,
+            ),
+          ),
+        ),
+      );
+
+      // Update the polyline with the new set of coordinates
+      setState(() {
+        _polyline.clear();
+        _polyline.add(
+          Polyline(
+            polylineId: const PolylineId("route"),
+            points: polylineCoordinates,
+            color: Colors.purple,
+            width: 8,
+          ),
+        );
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition: CameraPosition(
+          target: widget.pLocLatLng,
+          zoom: 12.5,
+        ),
+        markers: Set<Marker>.of(mymarker),
+        onMapCreated: (mapController) {
+          _controller.complete(mapController);
+        },
+        polylines: _polyline,
+      ),
+    );
+  }
+}
+
+
+
 // import 'dart:async';
 
 // import 'package:flutter/material.dart';
@@ -116,135 +251,3 @@
 //     );
 //   }
 // }
-
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
-
-class MyTrack extends StatefulWidget {
-  final Location p_location;
-  final LatLng p_loc_lat_long;
-
-  MyTrack({
-    Key? key,
-    required this.p_loc_lat_long,
-    required this.p_location,
-  });
-
-  @override
-  State<MyTrack> createState() => _MyTrackState();
-}
-
-class _MyTrackState extends State<MyTrack> {
-  final Completer<GoogleMapController> _controller = Completer();
-  LatLng? source_address;
-
-  List<LatLng> polylineCoordinates = [];
-  final List<Marker> mymarker = [];
-  final List<Marker> myMarkerList = const [];
-  Location location = Location();
-  final Set<Polyline> _polyline = {};
-
-  LocationData? currentLocation;
-  List<LatLng> allLocations = []; // List to store all location points
-
-  @override
-  void initState() {
-    super.initState();
-    mymarker.addAll(myMarkerList);
-    getCurrentLocation(context);
-  }
-
-  Future<void> getCurrentLocation(BuildContext context) async {
-    source_address = widget.p_loc_lat_long;
-    print("Source ===============================================");
-    print(source_address);
-    print(DateTime.now());
-    mymarker.add(
-      Marker(
-        markerId: const MarkerId("marker_2"),
-        position: source_address!,
-        icon: BitmapDescriptor.defaultMarker,
-        infoWindow: const InfoWindow(
-          title: 'Marker Title',
-          snippet: 'Source',
-        ),
-      ),
-    );
-
-    final GoogleMapController googleMapController = await _controller.future;
-
-    widget.p_location.onLocationChanged.listen((newLoc) {
-      currentLocation = newLoc;
-      print("Current ===============================================");
-      print(currentLocation);
-      print(DateTime.now());
-
-      // Add the new location to the list
-      allLocations.add(LatLng(newLoc.latitude!, newLoc.longitude!));
-
-      // Add a new segment to the polyline
-      if (allLocations.length > 1) {
-        polylineCoordinates.add(allLocations[allLocations.length - 2]);
-        polylineCoordinates.add(allLocations.last);
-      }
-      mymarker.add(Marker(
-        markerId: const MarkerId("current position"),
-        position: LatLng(
-          newLoc.latitude!,
-          newLoc.longitude!,
-        ), // LatLng for the marker
-        icon: BitmapDescriptor.defaultMarker,
-        infoWindow: const InfoWindow(
-          title: 'Marker position',
-          snippet: 'location',
-        ),
-      ));
-
-      googleMapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            zoom: 12,
-            target: LatLng(
-              newLoc.latitude!,
-              newLoc.longitude!,
-            ),
-          ),
-        ),
-      );
-
-      // Update the polyline with the new set of coordinates
-      setState(() {
-        _polyline.clear();
-        _polyline.add(
-          Polyline(
-            polylineId: const PolylineId("route"),
-            points: polylineCoordinates,
-            color: Colors.purple,
-            width: 8,
-          ),
-        );
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: CameraPosition(
-          target: widget.p_loc_lat_long,
-          zoom: 12.5,
-        ),
-        markers: Set<Marker>.of(mymarker),
-        onMapCreated: (mapController) {
-          _controller.complete(mapController);
-        },
-        polylines: _polyline,
-      ),
-    );
-  }
-}

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:test_app/screens/empty_page.dart';
 import 'package:test_app/screens/my_tracking.dart';
-import 'package:test_app/screens/track.dart';
 
 class GetLoc extends StatefulWidget {
   const GetLoc({super.key});
@@ -48,17 +46,12 @@ class _GetLocState extends State<GetLoc> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MyTrack(
-              p_loc_lat_long: userLocation!,
-              p_location: location,
+              pLocLatLng: userLocation!,
+              pLocation: location,
             ),
           ),
         );
 
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (context) => Empty(),
-        //   ),
-        // );
       } else {
         // Handle the case where initial location is not available.
       }
@@ -76,7 +69,7 @@ class _GetLocState extends State<GetLoc> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currentLocation == null ? CircularProgressIndicator() : Container(),
+      body: currentLocation == null ? const CircularProgressIndicator() : Container(),
     );
   }
 }
