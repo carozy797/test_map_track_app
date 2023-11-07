@@ -43,7 +43,8 @@ class _GetLocState extends State<GetLoc> {
         print("--------------------------------");
         userLocation = LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
         print(userLocation);
-
+        const CircularProgressIndicator();
+        // ignore: use_build_context_synchronously
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MyTrack(
