@@ -13,8 +13,9 @@ class API extends StatefulWidget {
 }
 
 class _APIState extends State<API> {
+  List<dynamic> users = [];
   Future<Post> fetchData() async {
-    const String apiUrl = 'https://example.com/api/data';
+    const String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
     final uri = Uri.parse(apiUrl);
     final response = await http.get(uri);
 
@@ -25,12 +26,25 @@ class _APIState extends State<API> {
     }
   }
 
+  Future<void> getData() async {
+    const String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+    final uri = Uri.parse(apiUrl);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      final body = response.body;
+      final json = jsonDecode(body);
+      print(json);
+    } else {
+      throw Exception("Failed to load");
+    }
+  }
+
   Future<Post> postData(String userId, String latitude, String longitude, DateTime created) async {
     Map<String, dynamic> request = {
-      "userId": const Uuid().v4(),
+      "userId": userId,
       "latitude": latitude,
       "longitude": longitude,
-      "created": created,
+      "created": created.toString(),
     };
     const String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
     final uri = Uri.parse(apiUrl);
@@ -39,6 +53,34 @@ class _APIState extends State<API> {
     if (response.statusCode == 200) {
       return Post.fromJson(json.decode(response.body));
     } else {
+      print(response.statusCode);
+      throw Exception("Failed to load");
+    }
+  }
+
+  Future<void> postTest() async {
+    const String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+    final uri = Uri.parse(apiUrl);
+    String uid = const Uuid().v4().toString();
+    final body = {
+      "userId": uid,
+      "title": "test",
+      "body": "quia et suscipit suscipit recusandae consequuntur expedita et cum",
+    };
+    final response = await http.post(
+      uri,
+      body: jsonEncode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 201) {
+      // Successful creation (status code 201)
+      // ignore: use_build_context_synchronously
+      showSnackbar(context, "Success!");
+      print(uid);
+    } else {
+      // Handle other status codes
+      print(response.statusCode);
+      print(uid);
       throw Exception("Failed to load");
     }
   }
@@ -46,11 +88,21 @@ class _APIState extends State<API> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // postData();
+          postTest();
+          // getData();
         },
         child: const Text("+"),
+      ),
+    );
+  }
+
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2), // Adjust the duration as needed
       ),
     );
   }
