@@ -73,7 +73,6 @@ class _APIState extends State<API> {
       headers: {'Content-Type': 'application/json'},
     );
     if (response.statusCode == 201) {
-      // Successful creation (status code 201)
       // ignore: use_build_context_synchronously
       showSnackbar(context, "Success!");
       print(uid);

@@ -51,9 +51,7 @@ class _GetLocState extends State<GetLoc> {
             ),
           ),
         );
-      } else {
-        // Handle the case where initial location is not available.
-      }
+      } else {}
     } catch (e) {
       print("Error fetching current location: $e");
     }
