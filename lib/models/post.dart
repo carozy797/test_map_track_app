@@ -1,13 +1,15 @@
 class Post {
   String? uid;
-  String? email;
-  String? surname;
+  String? latitude;
+  String? longitude;
+  DateTime? created;
 
-  Post({this.uid, this.email, this.surname});
+  Post({this.uid, this.latitude, this.longitude, this.created});
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
-    uid: json['uid'],
-    email: json['email'],
-    surname: json['surname'],
-  );
+        uid: json['uid'],
+        latitude: json['latitude'],
+        longitude: json['longitude'],
+        created: json['created'],
+      );
 }

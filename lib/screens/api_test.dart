@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:test_app/models/post.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 class API extends StatefulWidget {
   const API({super.key});
@@ -24,12 +25,14 @@ class _APIState extends State<API> {
     }
   }
 
-  Future<Post> PostData(String title, String body) async {
+  Future<Post> postData(String userId, String latitude, String longitude, DateTime created) async {
     Map<String, dynamic> request = {
-      "title": title,
-      "body": body,
+      "userId": const Uuid().v4(),
+      "latitude": latitude,
+      "longitude": longitude,
+      "created": created,
     };
-    const String apiUrl = 'https://example.com/api/data';
+    const String apiUrl = 'https://jsonplaceholder.typicode.com/posts';
     final uri = Uri.parse(apiUrl);
     final response = await http.post(uri, body: request);
 
@@ -42,6 +45,13 @@ class _APIState extends State<API> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return Scaffold(
+      body: FloatingActionButton(
+        onPressed: () {
+          // postData();
+        },
+        child: const Text("+"),
+      ),
+    );
   }
 }
