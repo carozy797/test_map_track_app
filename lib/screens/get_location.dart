@@ -51,7 +51,6 @@ class _GetLocState extends State<GetLoc> {
             ),
           ),
         );
-
       } else {
         // Handle the case where initial location is not available.
       }
@@ -69,7 +68,7 @@ class _GetLocState extends State<GetLoc> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currentLocation == null ? const CircularProgressIndicator() : Container(),
+      body: currentLocation == null ? const Center(child: CircularProgressIndicator()) : Container(),
     );
   }
 }

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/screens/get_location.dart';
-import 'package:test_app/screens/map_page.dart';
-import 'package:test_app/screens/marker_map.dart';
-import 'package:test_app/screens/search_map.dart';
-import 'package:test_app/screens/track.dart';
+ 
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +20,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home:  const GetLoc(),
+      // home: MapSample(),
     );
   }
 }
