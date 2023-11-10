@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -28,7 +27,6 @@ class _MyMarkerState extends State<MyMarker> {
   );
 
   static const LatLng _source = LatLng(5.560014, -0.205744);
-  // static const LatLng _source = LatLng(lat!, long!);
 
   Future<Uint8List> getImagesFromMarkers(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -41,7 +39,7 @@ class _MyMarkerState extends State<MyMarker> {
     final Uint8List iconMaker = await getImagesFromMarkers("assets/box-truck.png", 90);
     mymarker.add(Marker(
       markerId: const MarkerId("customized position"),
-      position: _destination, // LatLng for the marker
+      position: _destination,
       icon: BitmapDescriptor.fromBytes(iconMaker),
       infoWindow: const InfoWindow(
         title: 'Marker customeized',
@@ -51,33 +49,34 @@ class _MyMarkerState extends State<MyMarker> {
     setState(() {});
   }
 
-  static const LatLng _destination = LatLng(5.551614, -0.195244); // Adjusted latitude and longitude
+  static const LatLng _destination = LatLng(5.551614, -0.195244);
   final List<Marker> mymarker = [];
   final List<Marker> myMarkerList = const [
-    Marker(
-      markerId: MarkerId("marker_2"),
-      position: _source, // LatLng for the marker
-      icon: BitmapDescriptor.defaultMarker,
-      infoWindow: InfoWindow(
-        title: 'Marker Title',
-        snippet: 'Marker 2',
-      ),
-    ),
-    Marker(
-      markerId: MarkerId("marker_1"),
-      position: _destination, // LatLng for the marker
-      icon: BitmapDescriptor.defaultMarker,
-      infoWindow: InfoWindow(
-        title: 'Marker Title',
-        snippet: 'Marker 1',
-      ),
-    ),
+    // Marker(
+    //   markerId: MarkerId("marker_2"),
+    //   position: _destination, // LatLng for the marker
+    //   icon: BitmapDescriptor.defaultMarker,
+    //   infoWindow: InfoWindow(
+    //     title: 'Marker Title',
+    //     snippet: 'Marker 2',
+    //   ),
+    // )
   ];
+
   Location location = Location();
 
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData _locationData;
+  late GoogleMapController mapController;
+  MapType _currentMapType = MapType.normal;
+  List<MapType> mapTypes = [
+    MapType.normal,
+    MapType.hybrid,
+    MapType.satellite,
+    MapType.terrain,
+  ];
+  int currentMapTypeIndex = 0;
 
   Future<dynamic> getUserLocation() async {
     _serviceEnabled = await location.serviceEnabled();
@@ -95,7 +94,7 @@ class _MyMarkerState extends State<MyMarker> {
         return;
       }
     }
-
+    _locationData = await location.getLocation();
     return _locationData;
   }
 
@@ -104,18 +103,15 @@ class _MyMarkerState extends State<MyMarker> {
       print("My location");
       print('$value.latitude, $value.longitude');
       userLocation = LatLng(value.latitude, value.longitude);
-      // location.onLocationChanged.listen((event) {
-      //   _locationData = event;
-      // });
 
-      // make inital camera position the taken location
       _pGooglePlex = CameraPosition(
         target: userLocation ?? LatLng(value.latitude, value.longitude),
         zoom: 14,
       );
+
       mymarker.add(Marker(
         markerId: const MarkerId("current position"),
-        position: userLocation ?? LatLng(value.latitude, value.longitude), // LatLng for the marker
+        position: userLocation ?? LatLng(value.latitude, value.longitude),
         icon: BitmapDescriptor.defaultMarker,
         infoWindow: const InfoWindow(
           title: 'Marker position',
@@ -132,12 +128,16 @@ class _MyMarkerState extends State<MyMarker> {
 
       if (userLocation != null) {
         _polyline.add(
-          Polyline(
+            Polyline(
             polylineId: const PolylineId("route"),
             points: [userLocation!, _destination],
             color: Colors.purple,
             width: 8,
           ),
+        );
+      } else {
+        const Center(
+          child: CircularProgressIndicator(),
         );
       }
       setState(() {});
@@ -149,41 +149,57 @@ class _MyMarkerState extends State<MyMarker> {
     super.initState();
     mymarker.addAll(myMarkerList);
     packData();
-    setState(() {
-      
-    });
     getCustomeMarker();
-
     setState(() {});
-    // _polyline.add(
-    //   Polyline(
-    //     polylineId: PolylineId("route"),
-    //     points: [_source, _destination],
-    //     color: Colors.purple,
-    //     width: 8,
-    //   ),
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   child: Text("+"),
-      //   onPressed: () {
-      //     getUserLocation().then((value) {
-      //       print(" ${value.latitude}, ${value.longitude}");
-      //     });
-      //   },
-      // ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              mapController.animateCamera(
+                CameraUpdate.zoomIn(),
+              );
+            },
+            child: const Icon(Icons.zoom_in),
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: () {
+              mapController.animateCamera(
+                CameraUpdate.zoomOut(),
+              );
+            },
+            child: const Icon(Icons.zoom_out),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: _changeMapType,
+            child: const Icon(Icons.map),
+          ),
+        ],
+      ),
       body: GoogleMap(
+        mapType: _currentMapType,
         polylines: _polyline,
         initialCameraPosition: _pGooglePlex,
         markers: Set<Marker>.of(mymarker),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
+          mapController = controller;
         },
       ),
     );
+  }
+
+  void _changeMapType() {
+    setState(() {
+      currentMapTypeIndex = (currentMapTypeIndex + 1) % mapTypes.length;
+      _currentMapType = mapTypes[currentMapTypeIndex];
+    });
   }
 }

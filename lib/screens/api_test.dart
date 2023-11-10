@@ -33,7 +33,7 @@ class _APIState extends State<API> {
     if (response.statusCode == 200) {
       final body = response.body;
       final json = jsonDecode(body);
-      print(json);
+      print(json.runtimeType);
     } else {
       throw Exception("Failed to load");
     }
@@ -83,14 +83,35 @@ class _APIState extends State<API> {
       throw Exception("Failed to load");
     }
   }
+// Not working
+  Future<void> fetchAndPrintPosts() async {
+    try {
+      final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(response.body);
+        print(jsonResponse[0]["userId"]);
+        List<Post> post = Post.listFromJson(jsonResponse);
+        print(post);
+        // for (var post in posts) {
+        //   print("UserId: ${post.userId}, Title: ${post.title}, Body: ${post.body}");
+        // }
+      } else {
+        throw Exception('Failed to load posts');
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          postTest();
+        onPressed: () async {
+          // postTest();
+
           // getData();
+          fetchAndPrintPosts();
         },
         child: const Text("+"),
       ),

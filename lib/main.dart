@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/screens/api_test.dart';
 import 'package:test_app/screens/get_location.dart';
+import 'package:test_app/screens/marker_map.dart';
  
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  const GetLoc(),
+      home:  const MyMarker(),
       // home: MapSample(),
     );
   }
