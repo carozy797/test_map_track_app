@@ -83,7 +83,7 @@ class _APIState extends State<API> {
       throw Exception("Failed to load");
     }
   }
-// Not working
+// Not
   Future<void> fetchAndPrintPosts() async {
     try {
       final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));

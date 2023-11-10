@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:test_app/components/location_services.dart';
 
 class SearchMap extends StatefulWidget {
   const SearchMap({super.key});
@@ -43,10 +44,11 @@ class _SearchMapState extends State<SearchMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(title: const Text("searching..."),),
       body: Column(
         children: [
           const SizedBox(
-            height: 20,
+            height: 40,
           ),
           Row(
             children: [
@@ -67,7 +69,10 @@ class _SearchMapState extends State<SearchMap> {
                 icon: const Icon(
                   Icons.search,
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  var place = await LocationService().getPlace(_searchController.text);
+                  _goToplace(place);
+                },
               ),
             ],
           ),
@@ -85,5 +90,29 @@ class _SearchMapState extends State<SearchMap> {
         ],
       ),
     );
+  }
+
+  Future<void> _goToplace(Map<String, dynamic> place) async {
+    double lat = place["lat"];
+    double long = place["lng"];
+    mymarker.add(
+        Marker(
+        markerId: const MarkerId("searched loc:"),
+        position: LatLng(lat, long), // LatLng for the marker
+        icon: BitmapDescriptor.defaultMarker,
+        infoWindow: const InfoWindow(
+          title: 'Marker search',
+          snippet: 'search loc',
+        ),
+      ),
+    );
+    CameraPosition cameraPosition = CameraPosition(
+      target: LatLng(lat, long),
+      zoom: 20,
+    );
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    setState(() {});
   }
 }

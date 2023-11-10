@@ -1,98 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:google_places_flutter/model/prediction.dart';
 
-void main() => runApp(MyApp());
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
-class MyApp extends StatelessWidget {
+  final String? title;
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MapScreen(),
-    );
-  }
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class MapScreen extends StatefulWidget {
-  @override
-  _MapScreenState createState() => _MapScreenState();
-}
-
-class _MapScreenState extends State<MapScreen> {
-  late GoogleMapController mapController;
-  MapType _currentMapType = MapType.normal;
+class _MyHomePageState extends State {
+  TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Google Maps Flutter Example'),
-      ),
-      body: GoogleMap(
-        onMapCreated: (controller) {
-          mapController = controller;
-        },
-        initialCameraPosition: const CameraPosition(
-          target: LatLng(37.7749, -122.4194), // San Francisco coordinates
-          zoom: 12.0,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            placesAutoCompleteTextField(),
+          ],
         ),
-        mapType: _currentMapType,
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              mapController.animateCamera(
-                CameraUpdate.zoomIn(),
-              );
-            },
-            child: const Icon(Icons.zoom_in),
-          ),
-          const SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              mapController.animateCamera(
-                CameraUpdate.zoomOut(),
-              );
-            },
-            child: const Icon(Icons.zoom_out),
-          ),
-          const SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              _changeMapType(MapType.normal);
-            },
-            child: const Icon(Icons.map),
-          ),
-          const SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              _changeMapType(MapType.hybrid);
-            },
-            child: const Icon(Icons.satellite),
-          ),
-          const SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              _changeMapType(MapType.satellite);
-            },
-            child: const Icon(Icons.satellite),
-          ),
-          const SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              _changeMapType(MapType.terrain);
-            },
-            child: const Icon(Icons.terrain),
-          ),
-        ],
       ),
     );
   }
 
-  void _changeMapType(MapType mapType) {
-    setState(() {
-      _currentMapType = mapType;
-    });
+  placesAutoCompleteTextField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: GooglePlaceAutoCompleteTextField(
+        textEditingController: controller,
+        googleAPIKey: "AIzaSyARCZD-dk7cnxUwheGYfQJ4opipw4TcDzw",
+        inputDecoration: const InputDecoration(
+          hintText: "Search your location",
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+        ),
+        debounceTime: 400,
+        countries: ["in", "fr"],
+        isLatLngRequired: false,
+        getPlaceDetailWithLatLng: (Prediction prediction) {
+          print("placeDetails" + prediction.lat.toString());
+        },
+
+        itemClick: (Prediction prediction) {
+          controller.text = prediction.description ?? "";
+          controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description?.length ?? 0));
+        },
+        seperatedBuilder: const Divider(),
+        // OPTIONAL// If you want to customize list view item builder
+        itemBuilder: (context, index, Prediction prediction) {
+          return Container(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              children: [
+                const Icon(Icons.location_on),
+                const SizedBox(
+                  width: 7,
+                ),
+                Expanded(child: Text("${prediction.description ?? ""}"))
+              ],
+            ),
+          );
+        },
+
+        isCrossBtnShown: true,
+
+        // default 600 ms ,
+      ),
+    );
   }
 }
