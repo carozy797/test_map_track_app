@@ -39,4 +39,28 @@ class LocationService {
     print(latNorthEast);
     return results;
   }
+
+  Future<List?> getCordinatesForDay() async {
+    const apiUrl = 'http://54.237.225.255:8000/asset_location/';
+
+    const assetUuid = '60e751f3-800b-43dd-80dd-2ae7b62d0e39';
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+
+      final assetData = data.where((item) => item['asset_uuid'] == assetUuid).toList();
+
+      final oneDayData = assetData.where((item) {
+        final createdAt = DateTime.parse(item['created_at']);
+        final date = '${createdAt.year}-${createdAt.month}-${createdAt.day}';
+        return date == '2023-11-14'; // Replace with your any date later
+      }).toList();
+      print(oneDayData[0]['latitude']);
+      return oneDayData;
+    } else {
+      print('Failed to fetch data. Status code: ${response.statusCode}');
+    }
+    return null;
+  }
 }

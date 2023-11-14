@@ -81,10 +81,22 @@ class _SearchMapState extends State<SearchMap> {
                   Icons.search,
                 ),
                 onPressed: () async {
-                  var viewport = await LocationService().getViewport(_searchController.text);
-                  var place = await LocationService().getPlace(_searchController.text);
-                  _goToplace(place);
-                  _plotPolygon(viewport);
+                  var dayData = await LocationService().getCordinatesForDay();
+
+                  // Initialize empty list for LatLng coordinates
+                  List<LatLng> latlngCoordinates = [];
+
+                  // Iterate through the data and extract latitudes and longitudes
+                  for (var entry in dayData!) {
+                    double latitude = double.parse(entry["latitude"]);
+                    double longitude = double.parse(entry["longitude"]);
+                    latlngCoordinates.add(LatLng(latitude, longitude));
+                  }
+                  print(latlngCoordinates);
+                  // var viewport = await LocationService().getViewport(_searchController.text);
+                  // var place = await LocationService().getPlace(_searchController.text);
+                  // _goToplace(place);
+                  // _plotPolygon(viewport);
                 },
               ),
             ],
