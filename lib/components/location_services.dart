@@ -26,4 +26,17 @@ class LocationService {
     print(results);
     return results;
   }
+
+  Future<Map<String, dynamic>> getViewport(String input) async {
+    final placeId = await getPlaceId(input);
+    final String url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$key";
+
+    var response = await http.get(Uri.parse(url));
+    var json = jsonDecode(response.body);
+    var results = json['result']['geometry']['viewport'];
+    double latNorthEast = results["northeast"]["lat"];
+    print(results);
+    print(latNorthEast);
+    return results;
+  }
 }

@@ -53,7 +53,8 @@ class _MyMapState extends State<MyMap> {
     target: _source, // Accra, Ghana coordinates
     zoom: 14,
   );
-  static const LatLng _source = LatLng(5.560014, -0.205744);
+  static const LatLng _source = LatLng(37.52078916, -122.35459618);
+  static const LatLng other = LatLng(7.52133683, -1.35490229);
   static const LatLng _destination = LatLng(5.551614, -0.205244); // Adjusted latitude and longitude
 
   final Set<Marker> _markers = {};
@@ -74,7 +75,7 @@ class _MyMapState extends State<MyMap> {
   @override
   void initState() {
     super.initState();
-    packData();
+    // packData();
     // mymarker.addAll(myMarkerList);
     // getCurrentLocation();
     // getPolyPoints();
@@ -101,12 +102,31 @@ class _MyMapState extends State<MyMap> {
     // Add the marker to the _markers Set
     // _markers.add(marker);
     _markers.add(marker2);
-
     setState(() {});
     _polyline.add(
       const Polyline(
         polylineId: PolylineId("route"),
-        points: [_source, _destination],
+        points: [
+          LatLng(37.52078916, -122.35459618),
+          LatLng(37.52133683, -122.35490229),
+          LatLng(37.52161402, -122.35505375),
+          LatLng(37.5218905, -122.35519918),
+          LatLng(37.52215906, -122.3553441),
+          LatLng(37.52244224, -122.3554969),
+          LatLng(37.52271289, -122.35564283),
+          LatLng(37.52299544, -122.35580008),
+          LatLng(37.52326547, -122.35596009),
+          LatLng(37.52353239, -122.35612596),
+          LatLng(37.52379571, -122.35631397),
+          LatLng(37.52404792, -122.35651279),
+          LatLng(37.52429661, -122.3567153),
+          LatLng(37.52454815, -122.35693297),
+          LatLng(37.52479646, -122.35715652),
+          LatLng(37.52503451, -122.35737814),
+          LatLng(37.52527918, -122.35759682),
+          LatLng(37.52552611, -122.35781861),
+          LatLng(37.52578192, -122.35804173),
+        ],
         color: Colors.purple,
         width: 8,
       ),
