@@ -41,7 +41,7 @@ class LocationService {
   }
 
   Future<List?> getCordinatesForDay() async {
-    const apiUrl = 'http://54.237.225.255:8000/asset_location/';
+    const apiUrl = 'https://mvitracking.pro:9000/asset_location/';
 
     const assetUuid = '60e751f3-800b-43dd-80dd-2ae7b62d0e39';
     final response = await http.get(Uri.parse(apiUrl));
